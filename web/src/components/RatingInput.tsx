@@ -10,13 +10,13 @@ interface RatingInputProps {
 }
 
 const CMOS_OPTIONS = [
-  { value: 3,  label: 'A הרבה יותר טוב', short: 'A++' },
-  { value: 2,  label: 'A יותר טוב',      short: 'A+' },
-  { value: 1,  label: 'A קצת יותר טוב',  short: 'A' },
-  { value: 0,  label: 'דומה',             short: '=' },
-  { value: -1, label: 'B קצת יותר טוב',  short: 'B' },
-  { value: -2, label: 'B יותר טוב',      short: 'B+' },
-  { value: -3, label: 'B הרבה יותר טוב', short: 'B++' },
+  { value: 3,  label: 'A הרבה יותר', short: 'A++' },
+  { value: 2,  label: 'A יותר',      short: 'A+' },
+  { value: 1,  label: 'A קצת יותר',  short: 'A' },
+  { value: 0,  label: 'דומה',        short: '=' },
+  { value: -1, label: 'B קצת יותר',  short: 'B' },
+  { value: -2, label: 'B יותר',      short: 'B+' },
+  { value: -3, label: 'B הרבה יותר', short: 'B++' },
 ] as const;
 
 function CmosScale({
@@ -36,8 +36,8 @@ function CmosScale({
 
       {/* End labels */}
       <div className="flex justify-between items-center px-1">
-        <span className="text-xs text-muted-foreground">A הרבה יותר טוב</span>
-        <span className="text-xs text-muted-foreground">B הרבה יותר טוב</span>
+        <span className="text-xs text-muted-foreground">A הרבה יותר</span>
+        <span className="text-xs text-muted-foreground">B הרבה יותר</span>
       </div>
 
       {/* Radio row */}
@@ -89,13 +89,13 @@ export function RatingInput({
     <div className={cn("grid grid-cols-1 gap-10", className)}>
       <CmosScale
         name="naturalness"
-        title="מה נשמע יותר טבעי?"
+        title="איזו דגימה נשמעת יותר כמו עברית מדוברת יומיומית?"
         value={naturalness}
         onChange={onNaturalnessChange}
       />
       <CmosScale
         name="accuracy"
-        title="מה יותר תואם לטקסט?"
+        title="איזו דגימה נשמעת פחות רשמית או מוקראת?"
         value={accuracy}
         onChange={onAccuracyChange}
       />

@@ -1,6 +1,8 @@
 .DS_Store
 # audio/
 audio.zip
+onnx_models/
+voices/
 *.onnx
 *.npy
 tokens.txt

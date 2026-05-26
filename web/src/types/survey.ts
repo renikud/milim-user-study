@@ -30,6 +30,12 @@ export interface SurveyState {
 export interface Sentence {
   id: string;
   text: string;
+  sourceRow?: number;
+  category?: string;
+  targetIndex?: number;
+  informalIpa?: string;
+  formalIpa?: string;
+  subcategory?: string;
 }
 
 export interface LocalStorageData {

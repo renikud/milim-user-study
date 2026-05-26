@@ -55,7 +55,7 @@ describe('Persistence Logic (Data Recovery)', () => {
     result.current.saveToStorage(mockData);
     
     expect(localStorageMock.setItem).toHaveBeenCalledWith(
-      'phonikud-survey-session-123',
+      'renikud-survey-session-123',
       expect.stringContaining('"sessionId":"session-123"')
     );
   });
@@ -79,7 +79,7 @@ describe('Persistence Logic (Data Recovery)', () => {
     const { result } = renderHook(() => useLocalStorage('session-corrupt'));
     
     // Manually inject garbage into localStorage
-    localStorageMock.setItem('phonikud-survey-session-corrupt', '{ invalid json ...');
+    localStorageMock.setItem('renikud-survey-session-corrupt', '{ invalid json ...');
     
     // Should return null and log error (which we suppressed), NOT throw
     const loaded = result.current.loadFromStorage();

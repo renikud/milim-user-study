@@ -20,6 +20,9 @@ export interface Submission {
   sentence_id: string;
   model_a: string;
   model_b: string;
+  informal_ipa?: string;
+  formal_ipa?: string;
+  target_index?: number;
   naturalness_cmos: number; // -3 to +3 (positive = A better)
   accuracy_cmos: number;    // -3 to +3 (positive = A better)
   timestamp?: Date;
@@ -38,7 +41,7 @@ export interface CommentSubmission {
  */
 export async function submitSubmission(submission: Submission) {
   try {
-    const docRef = await addDoc(collection(db, 'submissions'), {
+    const docRef = await addDoc(collection(db, 'renikud_submissions'), {
       ...submission,
       timestamp: new Date()
     });
@@ -58,7 +61,7 @@ export async function submitBatch(submissions: Submission[]): Promise<void> {
     const batch = writeBatch(db);
 
     submissions.forEach((submission) => {
-      const docRef = doc(collection(db, 'submissions'));
+      const docRef = doc(collection(db, 'renikud_submissions'));
       batch.set(docRef, {
         ...submission,
         timestamp: new Date()
@@ -78,7 +81,7 @@ export async function submitBatch(submissions: Submission[]): Promise<void> {
  */
 export async function submitComments(commentData: CommentSubmission): Promise<void> {
   try {
-    const docRef = await addDoc(collection(db, 'comments'), {
+    const docRef = await addDoc(collection(db, 'renikud_comments'), {
       ...commentData,
       timestamp: new Date()
     });

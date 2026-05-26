@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import type { LocalStorageData } from '../types/survey';
 
-const STORAGE_PREFIX = 'phonikud-survey-';
+const STORAGE_PREFIX = 'renikud-survey-';
 
 /**
  * Hook for persisting and restoring survey state to/from localStorage

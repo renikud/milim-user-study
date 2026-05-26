@@ -67,7 +67,7 @@ export default function ThankYou() {
         <CardContent className="space-y-6">
           <div className="text-center text-lg space-y-4" dir="rtl">
             <p>
-              התשובות שלך נשמרו בהצלחה ויסייעו לנו לשפר את איכות הפקת הדיבור בעברית.
+              התשובות שלך נשמרו בהצלחה ויסייעו לנו להעריך הגייה של עברית מדוברת.
             </p>
             <p className="text-slate-600">
               התוצאות יפורסמו בסיום המחקר.

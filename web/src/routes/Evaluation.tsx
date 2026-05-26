@@ -14,6 +14,33 @@ import { AudioPlayer } from '../components/AudioPlayer';
 import { RatingInput } from '../components/RatingInput';
 import { Info, ChevronLeft, ChevronRight } from 'lucide-react';
 
+function renderHighlightedSentence(text: string, targetIndex?: number) {
+  const tokens = text.split(/(\s+)/);
+  let wordIndex = 0;
+
+  return tokens.map((token, index) => {
+    if (/^\s+$/.test(token)) {
+      return token;
+    }
+
+    const isTarget = wordIndex === targetIndex;
+    wordIndex += 1;
+
+    if (!isTarget) {
+      return token;
+    }
+
+    return (
+      <mark
+        key={`${token}-${index}`}
+        className="rounded bg-amber-200 px-1 py-0.5 text-slate-950"
+      >
+        {token}
+      </mark>
+    );
+  });
+}
+
 export default function Evaluation() {
   const navigate = useNavigate();
   const { userData } = useUser();
@@ -131,6 +158,9 @@ export default function Evaluation() {
           sentence_id: currentSentenceId,
           model_a: modelA,
           model_b: modelB,
+          informal_ipa: currentSentenceData.informalIpa,
+          formal_ipa: currentSentenceData.formalIpa,
+          target_index: currentSentenceData.targetIndex,
           naturalness_cmos: rating.naturalness,
           accuracy_cmos: rating.accuracy
         }]);
@@ -163,8 +193,8 @@ export default function Evaluation() {
     window.scrollTo(0, 0);
   };
 
-  const audioSrcA = `${import.meta.env.BASE_URL}audio/${modelA}/${currentSentenceId}.m4a`;
-  const audioSrcB = `${import.meta.env.BASE_URL}audio/${modelB}/${currentSentenceId}.m4a`;
+  const audioSrcA = `${import.meta.env.BASE_URL}audio/${modelA}/${currentSentenceId}.wav`;
+  const audioSrcB = `${import.meta.env.BASE_URL}audio/${modelB}/${currentSentenceId}.wav`;
 
   return (
     <div className="min-h-screen bg-slate-50 py-8 pb-20 px-4">
@@ -187,7 +217,7 @@ export default function Evaluation() {
               <Info className="h-4 w-4" />
             </div>
             <div className="text-sm text-slate-700">
-              <span className="font-semibold">הוראות:</span> השוו את ההקלטות לפי טבעיות ותאימות לטקסט בסולם 7 דרגות
+              <span className="font-semibold">הוראות:</span> איזו מהדגימות נשמעת יותר כמו עברית מדוברת יומיומית, ולא כמו דיבור רשמי או מוקרא?
             </div>
           </div>
         </div>
@@ -195,10 +225,10 @@ export default function Evaluation() {
         {/* Sentence Text */}
         <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
           <div className="text-xs text-slate-500 text-center mb-1" dir="rtl">
-            הטקסט שהוזן למערכת
+            הטקסט שהוזן למערכת - המילה הרלוונטית מודגשת
           </div>
           <div className="text-lg font-medium text-center" dir="rtl">
-            {currentSentenceData.text}
+            {renderHighlightedSentence(currentSentenceData.text, currentSentenceData.targetIndex)}
           </div>
         </div>
 
@@ -276,7 +306,7 @@ export default function Evaluation() {
         {/* Warning if not complete */}
         {!allRatingsComplete && (
           <div className="text-center text-sm text-amber-600" dir="rtl">
-            נא לדרג את שתי הקטגוריות לפני המעבר למשפט הבא
+            נא לענות על שתי השאלות לפני המעבר למשפט הבא
           </div>
         )}
       </div>

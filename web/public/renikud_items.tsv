@@ -1,0 +1,26 @@
+id	source_row	category	text	target_index	informal_ipa	formal_ipa	subcategory
+0	182	colloquial	הוא בא להסביר ולהציג את הרעיון.	3	velehatsˈiɡ	ulehatsˈiɡ	
+1	158	colloquial	הם חיו באושר וברווחה שנים רבות.	3	vebaʁvaχˈa	uvaʁvaχˈa	
+2	91	colloquial	הוא הגיב בבוטות לדברים שנאמרו בישיבה.	2	bebotˈut	bevotˈut	
+3	146	colloquial	הכנסנו את כל הארגזים לתוך המחסן החדש.	0	heχnˈasnu	hiχnˈasnu	
+4	5	colloquial	ההסכם נחתם בין ארצות הברית וישראל הבוקר.	5	vejisʁaʔˈel	visʁaʔˈel	prefix
+5	176	colloquial	זה פתרון קל ופשוט לכל בעיה.	3	vepaʃˈut	ufaʃˈut	
+6	74	colloquial	טום בראון, אחד ממייסדי אנתרופיק והאחראי על תחום משאבי המחשוב.	5	vehaʔaχʁaʔˈi	vahaʔaχʁˈaj	
+7	61	colloquial	החברה מעסיקה כחמש מאות מהם בישראל.	5	bejisʁaʔˈel	bisʁaʔˈel	
+8	103	colloquial	הוא קיבל את ההחלטה בזמן אמת.	4	bezmˈan	bizmˈan	
+9	6	colloquial	קנינו בחנות מכחולים וצבעים לציור.	3	vetsvaʔˈim	utsvaʔˈim	prefix
+10	97	colloquial	הוא נהנה מיתרון ברור על פני המתחרים שלו.	2	mejitaʁˈon	mijitʁˈon	
+11	156	colloquial	אני מסכים איתך לגמרי בעניין הזה.	3	legˈamʁej	legamʁˈej	
+12	71	colloquial	גוגל אמנם עסוקה בימים האחרונים בכנס הפיתוח השנתי שלה.	5	bekˈenes	bexˈenes	
+13	32	colloquial	הזמנתי מקום לשניים במסעדה החדשה.	2	leʃnˈajim	liʃnˈajim	vowel
+14	129	colloquial	עשרות מפגינים הגיעו לכיכר העיר.	0	ʔasʁˈot	ʔasaʁˈot	
+15	2	colloquial	נסיים היום ומחר נמשיך לעבוד.	2	vemaχˈaʁ	umaχˈaʁ	prefix
+16	151	colloquial	הגענו לתל אביב ומשם נסענו ברכבת.	3	vemiʃˈam	umiʃˈam	
+17	12	colloquial	יש צעירים וזקנים בקהל היום.	2	vezkenˈim	uzkenˈim	prefix
+18	51	colloquial	הדייג נצמד לדופן הסירה בזמן הסערה.	4	bezmˈan	bizmˈan	
+19	181	colloquial	הנזק שנגרם משריפת עץ היה כבד.	2	mesʁefˈat	misʁefˈat	
+20	83	colloquial	הוא העניק לה ספר במתנה כמחווה של ידידות.	5	kemeχvˈa	kemeχevˈa	
+21	93	colloquial	מועד הפגישה נקבע כבר בשבוע שעבר.	2	nikvˈa	nikbˈa	
+22	9	colloquial	שתלנו עצים ופרחים בגינה הציבורית.	2	vepʁaχˈim	ufʁaχˈim	prefix
+23	16	colloquial	מצאנו חתולים וכלבים נטושים ברחוב.	2	veklavˈim	uχlavˈim	prefix
+24	190	colloquial	הוא הגיע וכמובן הביא מתנה.	2	vekamuvˈan	veχamuvˈan	

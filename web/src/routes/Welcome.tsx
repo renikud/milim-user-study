@@ -79,7 +79,7 @@ export default function Welcome() {
       setModelShuffles(modelShuffles);
       
       // Save to localStorage
-      const storageKey = `phonikud-survey-${sessionId}`;
+      const storageKey = `renikud-survey-${sessionId}`;
       try {
         localStorage.setItem(storageKey, JSON.stringify({
           userData,
@@ -138,8 +138,8 @@ export default function Welcome() {
             ברוכים הבאים למחקר הערכת הפקת דיבור בעברית
           </CardTitle>
           <CardDescription className="text-center text-base mt-4" dir="rtl">
-            במחקר זה תתבקשו להאזין ל-20 משפטים בעברית, כאשר כל משפט יוצג ב-2 גרסאות שונות של הפקת דיבור.
-            עליכם לבחור את הגרסה המועדפת מבחינת טבעיות הדיבור ודיוק ההגייה.
+            במחקר זה תתבקשו להאזין ל-25 משפטים בעברית, כאשר כל משפט יוצג בשתי גרסאות הגייה שונות.
+            עליכם לבחור איזו דגימה נשמעת יותר כמו עברית מדוברת יומיומית, ולא כמו דיבור רשמי או מוקרא.
             <br /><br />
             המחקר אורך כ-10 דקות.
           </CardDescription>
