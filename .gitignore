@@ -9,3 +9,4 @@ tokens.txt
 model.json
 prompt.wav
 service-account.json
+*.pdf
