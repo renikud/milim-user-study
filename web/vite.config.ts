@@ -7,7 +7,7 @@ import { copyFileSync } from 'fs'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/phonikud-user-study/',
+  base: '/milim-user-study/',
   plugins: [
     react(), 
     tailwindcss(),

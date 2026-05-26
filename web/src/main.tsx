@@ -19,7 +19,7 @@ document.documentElement.setAttribute('lang', 'he');
 createRoot(document.getElementById('root')!).render(
   <UserProvider>
     <SurveyProvider>
-      <BrowserRouter basename='/phonikud-user-study/'>
+      <BrowserRouter basename='/milim-user-study/'>
         <Routes>
           <Route path="/" element={<Welcome />} />
           <Route 
