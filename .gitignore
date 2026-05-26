@@ -1,0 +1,9 @@
+.DS_Store
+# audio/
+audio.zip
+*.onnx
+*.npy
+tokens.txt
+model.json
+prompt.wav
+service-account.json
