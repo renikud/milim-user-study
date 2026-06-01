@@ -32,6 +32,68 @@ Therefore:
 3 groups * 150 ratings = 450 total ratings
 ```
 
+## ASSIGNMENT ALGORITHM
+
+The app loads the canonical item list from:
+
+```text
+web/public/colloquial_formal_informal_renikud_study_150/metadata.csv
+```
+
+The file order is treated as the source of truth. The current metadata contains item IDs `001` through `150` in order.
+
+The app defines:
+
+```ts
+STUDY_GROUPS = ['A', 'B', 'C']
+GROUP_SIZE = 50
+```
+
+The URL query parameter is parsed as:
+
+```ts
+group = new URLSearchParams(window.location.search).get('group')
+group = group.trim().toUpperCase()
+```
+
+Only `A`, `B`, and `C` are valid. Missing or invalid values block the study.
+
+The selected group is converted to a zero-based group index:
+
+```ts
+A -> 0
+B -> 1
+C -> 2
+```
+
+The item slice is then:
+
+```ts
+start = groupIndex * GROUP_SIZE
+end = start + GROUP_SIZE
+assignedItems = allItems.slice(start, end)
+```
+
+This gives:
+
+```text
+A: allItems.slice(0, 50)    -> IDs 001-050
+B: allItems.slice(50, 100)  -> IDs 051-100
+C: allItems.slice(100, 150) -> IDs 101-150
+```
+
+Within a participant's assigned 50 items, item order is shuffled per session. The assignment set does not change; only presentation order changes.
+
+For each item, the formal/informal samples are also randomized into blinded labels `A` and `B`. The submitted row stores both the blinded order and the user's preference:
+
+```ts
+variant_a: 'formal' | 'informal'
+variant_b: 'formal' | 'informal'
+preference: -3 | -2 | -1 | 0 | 1 | 2 | 3
+```
+
+Positive `preference` means sample A was preferred. Negative `preference` means sample B was preferred. Zero means similar.
+
 ## PARTICIPANT URLS
 
 Participants must use an assigned group URL:
