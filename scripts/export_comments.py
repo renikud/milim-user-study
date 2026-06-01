@@ -4,7 +4,7 @@
 #     "google-cloud-firestore==2.19.0",
 # ]
 # ///
-"""Export participant comments from Firestore.
+"""Export ReNikud participant comments from Firestore.
 
 Usage:
     1. Place service-account.json in the repo root
@@ -24,7 +24,7 @@ os.environ.setdefault(
 from google.cloud import firestore
 
 PROJECT_ID = "phonikud-user-study"
-COLLECTION = "comments"
+COLLECTION = "renikud_comments"
 
 
 def main() -> None:

@@ -5,7 +5,7 @@ import { useSurvey } from '../contexts/SurveyContext';
 import { useSurveyProgress } from '../hooks/useSurveyProgress';
 import { useLocalStorage, useAutoSave } from '../hooks/useLocalStorage';
 import { useSingleAudioPlayer } from '../hooks/useSingleAudioPlayer';
-import { loadSentences } from '../lib/sentences';
+import { DATASET_PATH, filterSentencesForGroup, loadSentences, parseStudyGroup } from '../lib/sentences';
 import { submitBatch } from '../lib/firebase';
 import type { Sentence } from '../types/survey';
 import { Progress } from '../components/ui/progress';
@@ -64,13 +64,16 @@ export default function Evaluation() {
   // Load sentences on mount
   useEffect(() => {
     loadSentences()
-      .then(setSentences)
+      .then((loadedSentences) => {
+        const studyGroup = parseStudyGroup(userData?.studyGroup ?? null);
+        setSentences(studyGroup ? filterSentencesForGroup(loadedSentences, studyGroup) : loadedSentences);
+      })
       .catch(error => {
         console.error('Error loading sentences:', error);
         alert('שגיאה בטעינת המשפטים');
       })
       .finally(() => setIsLoading(false));
-  }, []);
+  }, [userData?.studyGroup]);
 
   // Auto-save to localStorage on state change
   useAutoSave(
@@ -130,7 +133,7 @@ export default function Evaluation() {
   );
 
   const rating = getRating(currentSentenceId);
-  const allRatingsComplete = rating?.naturalness != null && rating?.accuracy != null;
+  const allRatingsComplete = rating?.naturalness != null;
   const bothAudiosPlayed = hasPlayedBothAudios(currentSentenceId);
   const canProceed = allRatingsComplete && bothAudiosPlayed;
 
@@ -142,10 +145,10 @@ export default function Evaluation() {
     );
   }
 
-  const [modelA, modelB] = currentModelShuffle.modelOrder;
+  const [variantA, variantB] = currentModelShuffle.modelOrder;
 
   const handleNext = async () => {
-    if (!canProceed || !currentSentenceId || !rating || rating.naturalness == null || rating.accuracy == null) return;
+    if (!canProceed || !currentSentenceId || !rating || rating.naturalness == null) return;
 
     // Check if this sentence hasn't been submitted yet
     if (!surveyState.submittedSentences.includes(currentSentenceId)) {
@@ -153,16 +156,12 @@ export default function Evaluation() {
 
       try {
         await submitBatch([{
-          name: userData.name,
           email: userData.email,
+          study_group: userData.studyGroup,
           sentence_id: currentSentenceId,
-          model_a: modelA,
-          model_b: modelB,
-          informal_ipa: currentSentenceData.informalIpa,
-          formal_ipa: currentSentenceData.formalIpa,
-          target_index: currentSentenceData.targetIndex,
-          naturalness_cmos: rating.naturalness,
-          accuracy_cmos: rating.accuracy
+          variant_a: variantA,
+          variant_b: variantB,
+          preference: rating.naturalness
         }]);
 
         markSentenceAsSubmitted(currentSentenceId);
@@ -193,8 +192,13 @@ export default function Evaluation() {
     window.scrollTo(0, 0);
   };
 
-  const audioSrcA = `${import.meta.env.BASE_URL}audio/${modelA}/${currentSentenceId}.wav`;
-  const audioSrcB = `${import.meta.env.BASE_URL}audio/${modelB}/${currentSentenceId}.wav`;
+  const getAudioSrc = (model: string) => {
+    const wav = model === 'formal' ? currentSentenceData.formalWav : currentSentenceData.informalWav;
+    return `${import.meta.env.BASE_URL}${DATASET_PATH}/wav/${wav}`;
+  };
+
+  const audioSrcA = getAudioSrc(variantA);
+  const audioSrcB = getAudioSrc(variantB);
 
   return (
     <div className="min-h-screen bg-slate-50 py-8 pb-20 px-4">
@@ -264,9 +268,7 @@ export default function Evaluation() {
         <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
           <RatingInput
             naturalness={rating?.naturalness}
-            accuracy={rating?.accuracy}
             onNaturalnessChange={(v) => updateRating(currentSentenceId, { naturalness: v })}
-            onAccuracyChange={(v) => updateRating(currentSentenceId, { accuracy: v })}
           />
           {!bothAudiosPlayed && (
             <div className="mt-3 text-sm text-amber-700 text-center" dir="rtl">
@@ -306,7 +308,7 @@ export default function Evaluation() {
         {/* Warning if not complete */}
         {!allRatingsComplete && (
           <div className="text-center text-sm text-amber-600" dir="rtl">
-            נא לענות על שתי השאלות לפני המעבר למשפט הבא
+            נא לבחור תשובה לפני המעבר למשפט הבא
           </div>
         )}
       </div>

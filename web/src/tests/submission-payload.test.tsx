@@ -32,21 +32,17 @@ describe('Evaluation Core Logic', () => {
     vi.clearAllMocks();
   });
 
-  it('generates correct CMOS submission payload', async () => {
+  it('generates correct preference submission payload', async () => {
     const sentenceId = 'sentence-1';
-    const user = { name: 'Test User', email: 'test@example.com' };
+    const user = { email: 'test@example.com' };
 
     const submission = {
-      name: user.name,
       email: user.email,
+      study_group: 'A',
       sentence_id: sentenceId,
-      model_a: 'informal',
-      model_b: 'formal',
-      informal_ipa: 'vemaχˈaʁ',
-      formal_ipa: 'umaχˈaʁ',
-      target_index: 2,
-      naturalness_cmos: 2,
-      accuracy_cmos: -1,
+      variant_a: 'informal',
+      variant_b: 'formal',
+      preference: 2,
     };
 
     await submitBatch([submission]);
@@ -57,19 +53,21 @@ describe('Evaluation Core Logic', () => {
     const payload = mockedSubmit.mock.calls[0][0];
     expect(payload).toHaveLength(1);
 
-    expect(payload[0]).toEqual(
-      expect.objectContaining({
-        name: 'Test User',
-        email: 'test@example.com',
-        sentence_id: 'sentence-1',
-        model_a: 'informal',
-        model_b: 'formal',
-        informal_ipa: 'vemaχˈaʁ',
-        formal_ipa: 'umaχˈaʁ',
-        target_index: 2,
-        naturalness_cmos: 2,
-        accuracy_cmos: -1,
-      })
-    );
+    expect(Object.keys(payload[0]).sort()).toEqual([
+      'email',
+      'preference',
+      'sentence_id',
+      'study_group',
+      'variant_a',
+      'variant_b',
+    ]);
+    expect(payload[0]).toEqual({
+      email: 'test@example.com',
+      study_group: 'A',
+      sentence_id: 'sentence-1',
+      variant_a: 'informal',
+      variant_b: 'formal',
+      preference: 2,
+    });
   });
 });

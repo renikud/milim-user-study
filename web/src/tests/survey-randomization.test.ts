@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import type { Sentence } from '@/types/survey';
+import { filterSentencesForGroup, parseStudyGroup } from '@/lib/sentences';
 import { generateShuffles, shuffleArray } from '@/lib/shuffle';
 
 describe('Shuffle Logic (Research Integrity)', () => {
@@ -55,6 +57,40 @@ describe('Shuffle Logic (Research Integrity)', () => {
         expect(shuffle).toBeDefined();
         expect(shuffle?.modelOrder).toHaveLength(models.length);
       });
+    });
+  });
+
+  describe('study groups', () => {
+    const studySentences = Array.from({ length: 150 }, (_, index): Sentence => ({
+      id: String(index + 1).padStart(3, '0'),
+      text: `Sentence ${index + 1}`,
+    }));
+
+    it('accepts A/B/C groups from links', () => {
+      expect(parseStudyGroup('A')).toBe('A');
+      expect(parseStudyGroup('b')).toBe('B');
+      expect(parseStudyGroup('C')).toBe('C');
+      expect(parseStudyGroup(null)).toBeNull();
+      expect(parseStudyGroup('D')).toBeNull();
+    });
+
+    it('assigns 50 unique items to each group and covers all 150', () => {
+      const groupA = filterSentencesForGroup(studySentences, 'A');
+      const groupB = filterSentencesForGroup(studySentences, 'B');
+      const groupC = filterSentencesForGroup(studySentences, 'C');
+
+      expect(groupA).toHaveLength(50);
+      expect(groupB).toHaveLength(50);
+      expect(groupC).toHaveLength(50);
+      expect(groupA[0].id).toBe('001');
+      expect(groupA[49].id).toBe('050');
+      expect(groupB[0].id).toBe('051');
+      expect(groupB[49].id).toBe('100');
+      expect(groupC[0].id).toBe('101');
+      expect(groupC[49].id).toBe('150');
+
+      const assignedIds = [...groupA, ...groupB, ...groupC].map(s => s.id);
+      expect(new Set(assignedIds).size).toBe(150);
     });
   });
 });

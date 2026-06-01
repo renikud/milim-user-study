@@ -38,6 +38,7 @@ import soundfile as sf
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_ITEMS = REPO_ROOT / "web" / "public" / "renikud_items.tsv"
 DEFAULT_AUDIO_DIR = REPO_ROOT / "web" / "public" / "audio"
+DEFAULT_WORD_AUDIO_DIR = REPO_ROOT / "web" / "public" / "audio_words"
 DEFAULT_ONNX_DIR = REPO_ROOT / "onnx_models"
 DEFAULT_VOICE = REPO_ROOT / "voices" / "female1.json"
 DEFAULT_RENIKUD = REPO_ROOT / "model.onnx"
@@ -162,11 +163,11 @@ def synthesize(tts: Any, style: Any, text: str) -> tuple[np.ndarray, int]:
 
 
 def generate(args: argparse.Namespace) -> None:
-    items_path = Path(args.items)
-    audio_dir = Path(args.audio_dir)
-    onnx_dir = Path(args.onnx_dir)
-    voice_json = Path(args.voice_json)
-    renikud_path = Path(args.renikud_path)
+    items_path = Path(args.items).resolve()
+    audio_dir = Path(args.word_audio_dir if args.words_only else args.audio_dir).resolve()
+    onnx_dir = Path(args.onnx_dir).resolve()
+    voice_json = Path(args.voice_json).resolve()
+    renikud_path = Path(args.renikud_path).resolve()
 
     ensure_inputs(onnx_dir, voice_json, renikud_path, args.skip_download)
     tts, style, g2p = build_tts(onnx_dir, voice_json, renikud_path)
@@ -187,21 +188,23 @@ def generate(args: argparse.Namespace) -> None:
             if out_path.exists() and not args.force:
                 continue
 
-            phoneme_text = phonemes_for_variant(g2p, row["text"], target_index, ipa)
+            phoneme_text = f"{ipa}." if args.words_only else phonemes_for_variant(g2p, row["text"], target_index, ipa)
             audio, sample_rate = synthesize(tts, style, phoneme_text)
             sf.write(out_path, audio, sample_rate)
-            print(f"Saved {out_path.relative_to(REPO_ROOT)}")
+            print(f"Saved {out_path.resolve().relative_to(REPO_ROOT)}")
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--items", default=str(DEFAULT_ITEMS))
     parser.add_argument("--audio-dir", default=str(DEFAULT_AUDIO_DIR))
+    parser.add_argument("--word-audio-dir", default=str(DEFAULT_WORD_AUDIO_DIR))
     parser.add_argument("--onnx-dir", default=os.environ.get("ONNX_DIR", str(DEFAULT_ONNX_DIR)))
     parser.add_argument("--voice-json", default=os.environ.get("VOICE_JSON", str(DEFAULT_VOICE)))
     parser.add_argument("--renikud-path", default=os.environ.get("RENIKUD_PATH", str(DEFAULT_RENIKUD)))
     parser.add_argument("--skip-download", action="store_true")
     parser.add_argument("--force", action="store_true")
+    parser.add_argument("--words-only", action="store_true", help="Synthesize only the target IPA token plus a period.")
     return parser.parse_args()
 
 

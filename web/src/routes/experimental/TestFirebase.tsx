@@ -9,13 +9,12 @@ export default function TestFirebase() {
     try {
       setStatus('Submitting...')
       await submitSubmission({
-        name: 'Test User',
         email: 'test@example.com',
+        study_group: 'A',
         sentence_id: '0',
-        model_a: 'styletts2',
-        model_b: 'roboshaul',
-        naturalness_cmos: 2,
-        accuracy_cmos: -1
+        variant_a: 'informal',
+        variant_b: 'formal',
+        preference: 2
       })
       setStatus('Submission successful!')
     } catch (error) {

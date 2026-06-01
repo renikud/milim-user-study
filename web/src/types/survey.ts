@@ -2,6 +2,7 @@ export interface UserData {
   name: string;
   email: string;
   isNativeSpeaker: boolean;
+  studyGroup?: string;
   sessionId: string;
   sentenceOrder: string[]; // Shuffled sentence IDs
   comments?: string; // Optional feedback from user
@@ -9,8 +10,7 @@ export interface UserData {
 
 export interface Rating {
   sentenceId: string;
-  naturalness?: number; // CMOS: -3 to +3 (positive = A better)
-  accuracy?: number;    // CMOS: -3 to +3 (positive = A better)
+  naturalness?: number; // Preference: -3 to +3 (positive = A better)
 }
 
 export interface ModelShuffle {
@@ -35,6 +35,8 @@ export interface Sentence {
   targetIndex?: number;
   informalIpa?: string;
   formalIpa?: string;
+  informalWav?: string;
+  formalWav?: string;
   subcategory?: string;
 }
 

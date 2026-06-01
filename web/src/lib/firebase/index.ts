@@ -15,16 +15,12 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 export interface Submission {
-  name: string;
   email: string;
+  study_group?: string;
   sentence_id: string;
-  model_a: string;
-  model_b: string;
-  informal_ipa?: string;
-  formal_ipa?: string;
-  target_index?: number;
-  naturalness_cmos: number; // -3 to +3 (positive = A better)
-  accuracy_cmos: number;    // -3 to +3 (positive = A better)
+  variant_a: 'formal' | 'informal' | string;
+  variant_b: 'formal' | 'informal' | string;
+  preference: number; // -3 to +3, positive = A preferred, negative = B preferred, 0 = similar
   timestamp?: Date;
 }
 

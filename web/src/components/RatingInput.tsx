@@ -3,13 +3,11 @@ import { cn } from '../lib/utils';
 
 interface RatingInputProps {
   naturalness?: number;
-  accuracy?: number;
   onNaturalnessChange: (value: number) => void;
-  onAccuracyChange: (value: number) => void;
   className?: string;
 }
 
-const CMOS_OPTIONS = [
+const PREFERENCE_OPTIONS = [
   { value: 3,  label: 'A הרבה יותר', short: 'A++' },
   { value: 2,  label: 'A יותר',      short: 'A+' },
   { value: 1,  label: 'A קצת יותר',  short: 'A' },
@@ -42,7 +40,7 @@ function CmosScale({
 
       {/* Radio row */}
       <div className="flex justify-between items-start">
-        {CMOS_OPTIONS.map(option => (
+        {PREFERENCE_OPTIONS.map(option => (
           <label
             key={option.value}
             className="flex flex-col items-center gap-1.5 cursor-pointer group flex-1"
@@ -80,9 +78,7 @@ function CmosScale({
 
 export function RatingInput({
   naturalness,
-  accuracy,
   onNaturalnessChange,
-  onAccuracyChange,
   className
 }: RatingInputProps) {
   return (
@@ -92,12 +88,6 @@ export function RatingInput({
         title="איזו דגימה נשמעת יותר כמו עברית מדוברת יומיומית?"
         value={naturalness}
         onChange={onNaturalnessChange}
-      />
-      <CmosScale
-        name="accuracy"
-        title="איזו דגימה נשמעת פחות רשמית או מוקראת?"
-        value={accuracy}
-        onChange={onAccuracyChange}
       />
     </div>
   );

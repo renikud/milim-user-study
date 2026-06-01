@@ -25,11 +25,14 @@ vi.mock('@/lib/firebase', async () => {
 
 // 2. Mock Sentences (Load only 2 sentences for speed)
 vi.mock('@/lib/sentences', () => ({
+  DATASET_PATH: 'colloquial_formal_informal_renikud_study_150',
+  filterSentencesForGroup: vi.fn((sentences) => sentences),
   loadSentences: vi.fn().mockResolvedValue([
     { id: 's1', text: 'Sentence One' },
     { id: 's2', text: 'Sentence Two' }
   ]),
-  TTS_MODELS: ['m1', 'm2'],
+  parseStudyGroup: vi.fn(() => 'A'),
+  TTS_MODELS: ['informal', 'formal'],
 }));
 
 // Define constants for use in test assertions (must match mock above)
@@ -52,9 +55,9 @@ describe('Full Survey Flow Integration', () => {
     vi.clearAllMocks();
   });
 
-  it('completes the entire survey flow with CMOS ratings', async () => {
+  it('completes the entire survey flow with preference ratings', async () => {
     render(
-      <MemoryRouter initialEntries={['/']}>
+      <MemoryRouter initialEntries={['/?group=A']}>
         <UserProvider>
           <SurveyProvider>
             <Routes>
@@ -102,10 +105,9 @@ describe('Full Survey Flow Integration', () => {
       fireEvent.click(playButtons[0]);
       fireEvent.click(playButtons[1]);
 
-      // Click a CMOS option for naturalness (first "דומה") and accuracy (second "דומה")
+      // Click a preference option for spoken-Hebrew naturalness
       const similarOptions = screen.getAllByRole('radio', { name: /דומה/ });
       fireEvent.click(similarOptions[0]); // naturalness: 0
-      fireEvent.click(similarOptions[1]); // accuracy: 0
 
       // Click Next / Finish
       const nextBtn = screen.getByRole('button', { name: /הבא|סיים/i });
@@ -125,14 +127,21 @@ describe('Full Survey Flow Integration', () => {
     expect(allSubmissions).toHaveLength(MOCK_SENTENCES.length);
 
     // Verify submission structure
+    expect(Object.keys(allSubmissions[0]).sort()).toEqual([
+      'email',
+      'preference',
+      'sentence_id',
+      'study_group',
+      'variant_a',
+      'variant_b',
+    ]);
     expect(allSubmissions[0]).toMatchObject({
-      name: 'Random Tester',
       email: 'random@test.com',
+      study_group: 'A',
       sentence_id: expect.stringMatching(/s[1-2]/),
-      model_a: expect.any(String),
-      model_b: expect.any(String),
-      naturalness_cmos: 0,
-      accuracy_cmos: 0,
+      variant_a: expect.stringMatching(/formal|informal/),
+      variant_b: expect.stringMatching(/formal|informal/),
+      preference: 0,
     });
 
     // 5. Verify Thank You Page

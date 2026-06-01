@@ -9,10 +9,12 @@ import { useUser } from '../contexts/UserContext';
 import { useSurvey } from '../contexts/SurveyContext';
 import { useShuffleLogic } from '../hooks/useShuffleLogic';
 import { isValidEmail, isValidName } from '../lib/validation';
-import { loadSentences, TTS_MODELS } from '../lib/sentences';
+import { filterSentencesForGroup, loadSentences, parseStudyGroup, TTS_MODELS } from '../lib/sentences';
+import { AlertCircle } from 'lucide-react';
 
 export default function Welcome() {
   const navigate = useNavigate();
+  const studyGroup = parseStudyGroup(new URLSearchParams(window.location.search).get('group'));
   const { setUserData } = useUser();
   const { setModelShuffles } = useSurvey();
   const { generateUserShuffles } = useShuffleLogic();
@@ -52,13 +54,18 @@ export default function Welcome() {
       setShowRejection(true);
       return;
     }
+
+    if (!studyGroup) {
+      return;
+    }
     
     setIsLoading(true);
     
     try {
       // Load sentences
       const sentences = await loadSentences();
-      const sentenceIds = sentences.map(s => s.id);
+      const groupSentences = filterSentencesForGroup(sentences, studyGroup);
+      const sentenceIds = groupSentences.map(s => s.id);
       
       // Generate shuffles
       const { sessionId, sentenceOrder, modelShuffles } = generateUserShuffles(
@@ -71,6 +78,7 @@ export default function Welcome() {
         name: name.trim(),
         email: email.trim(),
         isNativeSpeaker: true,
+        studyGroup,
         sessionId,
         sentenceOrder
       };
@@ -130,6 +138,26 @@ export default function Welcome() {
     );
   }
 
+  if (!studyGroup) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4 bg-slate-50">
+        <Card className="max-w-xl w-full">
+          <CardHeader>
+            <CardTitle className="flex items-center justify-center gap-2 text-center text-xl" dir="rtl">
+              <AlertCircle className="h-5 w-5 text-red-600" />
+              קישור לא תקין
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-center text-base text-slate-700" dir="rtl">
+              לא ניתן להתחיל את המחקר מהקישור הזה. נא להשתמש בקישור האישי שנשלח אליך.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-slate-50">
       <Card className="max-w-2xl w-full">
@@ -138,8 +166,8 @@ export default function Welcome() {
             ברוכים הבאים למחקר הערכת הפקת דיבור בעברית
           </CardTitle>
           <CardDescription className="text-center text-base mt-4" dir="rtl">
-            במחקר זה תתבקשו להאזין ל-25 משפטים בעברית, כאשר כל משפט יוצג בשתי גרסאות הגייה שונות.
-            עליכם לבחור איזו דגימה נשמעת יותר כמו עברית מדוברת יומיומית, ולא כמו דיבור רשמי או מוקרא.
+            במחקר זה יוצגו בפניך 50 משפטים בעברית. בכל משפט תודגש מילה אחת, ותשמע.י שתי הקלטות של המילה המודגשת בלבד.
+            עליך לבחור איזו הקלטה נשמעת יותר כמו עברית מדוברת יומיומית, ולא כמו דיבור רשמי או מוקרא.
             <br /><br />
             המחקר אורך כ-10 דקות.
           </CardDescription>
