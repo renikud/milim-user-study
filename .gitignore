@@ -12,3 +12,6 @@ model.json
 prompt.wav
 service-account.json
 *.pdf
+
+renikud_submissions_*.csv
+renikud_comments_*.csv
