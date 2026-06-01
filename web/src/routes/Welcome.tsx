@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Input } from '../components/ui/input';
@@ -14,7 +14,8 @@ import { AlertCircle } from 'lucide-react';
 
 export default function Welcome() {
   const navigate = useNavigate();
-  const studyGroup = parseStudyGroup(new URLSearchParams(window.location.search).get('group'));
+  const [locationSearch, setLocationSearch] = useState(window.location.search);
+  const studyGroup = parseStudyGroup(new URLSearchParams(locationSearch).get('group'));
   const { setUserData } = useUser();
   const { setModelShuffles } = useSurvey();
   const { generateUserShuffles } = useShuffleLogic();
@@ -25,6 +26,17 @@ export default function Welcome() {
   const [showRejection, setShowRejection] = useState(false);
   const [errors, setErrors] = useState<{ name?: string; email?: string; speaker?: string }>({});
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    // Temporary collection routing: group B is full, so new B links collect group A ratings.
+    // Remove this once group A has enough completed participants or B should reopen.
+    if (studyGroup !== 'B') return;
+
+    const nextUrl = new URL(window.location.href);
+    nextUrl.searchParams.set('group', 'A');
+    window.history.replaceState(null, '', nextUrl);
+    setLocationSearch(window.location.search);
+  }, [studyGroup]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,7 +70,7 @@ export default function Welcome() {
     if (!studyGroup) {
       return;
     }
-    
+
     setIsLoading(true);
     
     try {
@@ -136,6 +148,10 @@ export default function Welcome() {
         </Card>
       </div>
     );
+  }
+
+  if (studyGroup === 'B') {
+    return null;
   }
 
   if (!studyGroup) {

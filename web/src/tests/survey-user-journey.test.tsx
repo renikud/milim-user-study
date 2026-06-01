@@ -140,11 +140,16 @@ describe('Full Survey Flow Integration', () => {
     await screen.findByText(/תודה רבה על השתתפותך/i);
   });
 
-  it.each(['A', 'B', 'C'])('submits the study group from ?group=%s', async (group) => {
+  it.each([
+    ['A', 'A'],
+    ['A', 'B'],
+    ['C', 'C'],
+  ])('submits study group %s from ?group=%s after routing', async (expectedGroup, group) => {
     await startSurveyFromGroup(group, `${group.toLowerCase()}@test.com`);
     await submitCurrentSentence();
 
     const firstSubmission = vi.mocked(submitBatch).mock.calls[0][0][0] as Submission;
-    expect(firstSubmission.study_group).toBe(group);
+    expect(firstSubmission.study_group).toBe(expectedGroup);
+    expect(new URL(window.location.href).searchParams.get('group')).toBe(expectedGroup);
   });
 });

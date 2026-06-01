@@ -132,6 +132,24 @@ The app accepts lowercase values too, but send uppercase links.
 
 If the URL has no valid `group` parameter, the app blocks the study and shows an invalid-link message.
 
+## CURRENT ROUTING OVERRIDE
+
+Group B already has enough completed participants. To collect more Group A ratings, the app currently redirects new Group B links to Group A:
+
+```text
+?group=B -> ?group=A
+```
+
+This is an explicit URL redirect using `window.history.replaceState`, so the participant's visible URL changes to `?group=A` before the study starts.
+
+The submitted rows also store:
+
+```ts
+study_group: 'A'
+```
+
+Remove this override when Group A has enough completed participants or when Group B should be opened again.
+
 ## FIREBASE FIELD
 
 Each rating stores the assigned group in:
