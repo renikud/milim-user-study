@@ -42,6 +42,30 @@ https://your-site.example/?group=B
 https://your-site.example/?group=C
 ```
 
+For the GitHub Pages deployment, use:
+
+```text
+https://renikud.github.io/milim-user-study/?group=A
+https://renikud.github.io/milim-user-study/?group=B
+https://renikud.github.io/milim-user-study/?group=C
+```
+
+`group` is a query parameter. Do not put it in the path.
+
+Correct:
+
+```text
+https://renikud.github.io/milim-user-study/?group=A
+```
+
+Wrong:
+
+```text
+https://renikud.github.io/milim-user-study/group=A
+```
+
+The wrong form returns 404 on GitHub Pages because it looks like a real route/file path.
+
 The app accepts lowercase values too, but send uppercase links.
 
 If the URL has no valid `group` parameter, the app blocks the study and shows an invalid-link message.
