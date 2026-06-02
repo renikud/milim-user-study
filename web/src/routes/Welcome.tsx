@@ -28,12 +28,12 @@ export default function Welcome() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Temporary collection routing: group B is full, so new B links collect group A ratings.
-    // Remove this once group A has enough completed participants or B should reopen.
-    if (studyGroup !== 'B') return;
+    // Temporary collection routing: groups A and B are full, so new A/B links collect group C ratings.
+    // Remove this once group C has enough completed participants.
+    if (studyGroup !== 'A' && studyGroup !== 'B') return;
 
     const nextUrl = new URL(window.location.href);
-    nextUrl.searchParams.set('group', 'A');
+    nextUrl.searchParams.set('group', 'C');
     window.history.replaceState(null, '', nextUrl);
     setLocationSearch(window.location.search);
   }, [studyGroup]);

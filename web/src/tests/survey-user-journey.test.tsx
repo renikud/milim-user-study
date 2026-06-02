@@ -129,7 +129,7 @@ describe('Full Survey Flow Integration', () => {
     ]);
     expect(allSubmissions[0]).toMatchObject({
       email: 'random@test.com',
-      study_group: 'A',
+      study_group: 'C',
       sentence_id: expect.stringMatching(/s[1-2]/),
       variant_a: expect.stringMatching(/formal|informal/),
       variant_b: expect.stringMatching(/formal|informal/),
@@ -141,8 +141,8 @@ describe('Full Survey Flow Integration', () => {
   });
 
   it.each([
-    ['A', 'A'],
-    ['A', 'B'],
+    ['C', 'A'],
+    ['C', 'B'],
     ['C', 'C'],
   ])('submits study group %s from ?group=%s after routing', async (expectedGroup, group) => {
     await startSurveyFromGroup(group, `${group.toLowerCase()}@test.com`);
