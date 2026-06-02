@@ -12,6 +12,58 @@ import { isValidEmail, isValidName } from '../lib/validation';
 import { filterSentencesForGroup, loadSentences, parseStudyGroup, TTS_MODELS } from '../lib/sentences';
 import { AlertCircle } from 'lucide-react';
 
+const MAYMON_RECOVERY_EMAIL_SHA256 = '36e89d818309d6c63939002bbd1ff61f824e7ed8bcf84239476764c64522a3ac';
+const MAYMON_RECOVERY_ANSWERED_IDS = new Set([
+  '101',
+  '102',
+  '103',
+  '104',
+  '105',
+  '106',
+  '107',
+  '108',
+  '109',
+  '110',
+  '111',
+  '112',
+  '114',
+  '116',
+  '117',
+  '119',
+  '120',
+  '121',
+  '123',
+  '124',
+  '126',
+  '127',
+  '129',
+  '130',
+  '131',
+  '133',
+  '134',
+  '136',
+  '137',
+  '138',
+  '139',
+  '140',
+  '142',
+  '144',
+  '145',
+  '146',
+  '147',
+  '148',
+  '149',
+  '150',
+]);
+
+async function sha256Hex(value: string): Promise<string> {
+  const data = new TextEncoder().encode(value);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(hashBuffer))
+    .map(byte => byte.toString(16).padStart(2, '0'))
+    .join('');
+}
+
 export default function Welcome() {
   const navigate = useNavigate();
   const [locationSearch, setLocationSearch] = useState(window.location.search);
@@ -76,7 +128,14 @@ export default function Welcome() {
     try {
       // Load sentences
       const sentences = await loadSentences();
-      const groupSentences = filterSentencesForGroup(sentences, studyGroup);
+      let groupSentences = filterSentencesForGroup(sentences, studyGroup);
+
+      // Temporary recovery patch after a refresh at 40/50.
+      // Remove this block after she completes the remaining Group C items.
+      if (await sha256Hex(email.trim().toLowerCase()) === MAYMON_RECOVERY_EMAIL_SHA256) {
+        groupSentences = groupSentences.filter(sentence => !MAYMON_RECOVERY_ANSWERED_IDS.has(sentence.id));
+      }
+
       const sentenceIds = groupSentences.map(s => s.id);
       
       // Generate shuffles
