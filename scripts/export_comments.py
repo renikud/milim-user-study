@@ -13,7 +13,9 @@ Usage:
 
 from __future__ import annotations
 
+import csv
 import os
+from datetime import datetime, timezone
 from pathlib import Path
 
 os.environ.setdefault(
@@ -25,6 +27,8 @@ from google.cloud import firestore
 
 PROJECT_ID = "phonikud-user-study"
 COLLECTION = "renikud_comments"
+EXPORTS_DIR = Path(__file__).resolve().parent.parent / "exports"
+CSV_FIELDS = ["timestamp", "name", "email", "comments"]
 
 
 def main() -> None:
@@ -49,7 +53,16 @@ def main() -> None:
         print("No comments found.")
         return
 
-    print(f"Found {len(rows)} comments:\n")
+    EXPORTS_DIR.mkdir(exist_ok=True)
+    output_path = EXPORTS_DIR / (
+        f"renikud_comments_{datetime.now(timezone.utc):%Y%m%dT%H%M%SZ}.csv"
+    )
+    with output_path.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=CSV_FIELDS)
+        writer.writeheader()
+        writer.writerows(rows)
+
+    print(f"Wrote {len(rows)} comments to {output_path}\n")
     for i, row in enumerate(rows, start=1):
         print(f"[{i}] {row['name']} <{row['email']}>")
         if row["timestamp"]:
